@@ -1,3 +1,6 @@
 package com.example.study_ai.dtos;
 
-public record ResponseDTO(String name, String token) { }
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+public record ResponseDTO(@JsonProperty("name") String name,
+                          @JsonProperty("token") String token) { }

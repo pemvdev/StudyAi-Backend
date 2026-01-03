@@ -38,11 +38,15 @@ public class AuthController {
     public ResponseEntity register(@RequestBody RegisterRequestDTO body){
         Optional<User> user = this.userRepository.findByEmail(body.email());
 
+        if (body.name() == null || body.name().isBlank()) {
+            return ResponseEntity.badRequest().body("Name is required");
+        }
+
         if(user.isEmpty()){
             User newUser = new User();
             newUser.setPassword(passwordEncoder.encode(body.password()));
             newUser.setEmail(body.email());
-            newUser .setName(body.name());
+            newUser.setName(body.name());
             this.userRepository.save(newUser);
 
             String token = this.tokenService.generateToken(newUser);
