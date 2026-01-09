@@ -38,6 +38,7 @@ public class ClassroomService {
         classroom.setName(request.name());
         classroom.setDescription(request.description());
         classroom.setUser(user);
+        classroom.setCreatedAt(request.createdAt());
 
         return classroomRepository.save(classroom);
     }

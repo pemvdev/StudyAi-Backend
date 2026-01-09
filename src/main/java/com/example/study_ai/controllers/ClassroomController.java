@@ -47,7 +47,8 @@ public class ClassroomController {
         ClassroomResponseDTO response = new ClassroomResponseDTO(
                 classroom.getId(),
                 classroom.getName(),
-                classroom.getDescription()
+                classroom.getDescription(),
+                classroom.getCreatedAt()
         );
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);

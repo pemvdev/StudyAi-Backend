@@ -1,5 +1,7 @@
 package com.example.study_ai.domain.user;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -30,6 +32,7 @@ public class Classroom {
     private String description;
 
     @Column(nullable = false, updatable = false)
+    @JsonProperty("dateOfCreation")
     private LocalDateTime createdAt;
     @PrePersist
     protected void onCreate() {
@@ -37,5 +40,6 @@ public class Classroom {
     }
 
     @OneToMany(mappedBy = "classroom", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
     private List<Subject> subjects = new ArrayList<>();
 }
