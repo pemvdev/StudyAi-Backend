@@ -12,7 +12,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -25,11 +24,8 @@ public class ClassroomService {
     private final UserRepository userRepository;
 
 
-    public List<Classroom> getAllClassrooms(Authentication authentication) {
-
-        Long userId = (Long) authentication.getPrincipal();
-
-        return classroomRepository.findAllByUser_Id(userId);
+    public List<Classroom> findByUserId(Long userId) {
+        return classroomRepository.findAllByUserId(userId);
     }
 
 

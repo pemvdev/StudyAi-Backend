@@ -26,9 +26,10 @@ public class ClassroomController {
     private final ClassroomService classroomService;
     private final UserRepository userRepository;
 
-    @GetMapping
-    public ResponseEntity<List<Classroom>> getAll(Authentication authentication) {
-        return ResponseEntity.ok(classroomService.getAllClassrooms(authentication));
+    @GetMapping("/user")
+    public ResponseEntity<List<Classroom>> getByUser(Authentication authentication) {
+        Long userId = (Long) authentication.getPrincipal();
+        return ResponseEntity.ok(classroomService.findByUserId(userId));
     }
 
     @PostMapping
