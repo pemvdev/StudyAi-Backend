@@ -7,6 +7,7 @@ import com.example.study_ai.dtos.CreateSubjectRequestDTO;
 import com.example.study_ai.dtos.SubjectResponseDTO;
 import com.example.study_ai.repositories.ClassroomRepository;
 import com.example.study_ai.repositories.SubjectRepository;
+import com.example.study_ai.repositories.UserRepository;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.AccessDeniedException;
@@ -21,6 +22,7 @@ public class SubjectService {
 
     private final SubjectRepository subjectRepository;
     private final ClassroomRepository classroomRepository;
+    private final UserRepository userRepository;
 
 
     public SubjectResponseDTO create(
@@ -76,6 +78,69 @@ public class SubjectService {
                         classroom.getId()
                 ))
                 .toList();
+    }
+
+    public SubjectResponseDTO updateSubject(
+            Long classroomId,
+            Long subjectId,
+            CreateSubjectRequestDTO request,
+            Authentication authentication
+    ) {
+        Long userId = Long.valueOf(authentication.getName());
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        Classroom classroom = classroomRepository.findById(classroomId)
+                .orElseThrow(() -> new RuntimeException("Classroom not found"));
+
+        if (!classroom.getUser().getId().equals(user.getId())) {
+            throw new RuntimeException("Not allowed");
+        }
+
+        Subject subject = subjectRepository.findById(subjectId)
+                .orElseThrow(() -> new RuntimeException("Subject not found"));
+
+        if (!subject.getClassroom().getId().equals(classroomId)) {
+            throw new RuntimeException("Subject does not belong to this classroom");
+        }
+
+        subject.setName(request.name());
+        subjectRepository.save(subject);
+
+        return new SubjectResponseDTO(
+                subject.getId(),
+                subject.getName(),
+                subject.getClassroom().getId()
+        );
+    }
+
+
+    public void deleteSubject(
+            Long classroomId,
+            Long subjectId,
+            Authentication authentication
+    ){
+        Long userId = Long.valueOf(authentication.getName());
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        Classroom classroom = classroomRepository.findById(classroomId)
+                .orElseThrow(() -> new RuntimeException("Classroom not found"));
+
+        if (!classroom.getUser().getId().equals(user.getId())) {
+            throw new RuntimeException("Not allowed");
+        }
+
+        Subject subject = subjectRepository.findById(subjectId)
+                .orElseThrow(() -> new RuntimeException("Subject not found"));
+
+        if (!subject.getClassroom().getId().equals(classroom.getId())) {
+            throw new RuntimeException("Subject does not belong to this classroom");
+        }
+
+        subjectRepository.delete(subject);
     }
 
 }

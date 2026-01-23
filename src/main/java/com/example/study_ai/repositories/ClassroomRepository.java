@@ -18,4 +18,5 @@ public interface ClassroomRepository extends JpaRepository<Classroom, Long> {
     List<Classroom> findAllByUserId(Long userId);
 
 
+    Optional<Classroom> findByIdAndUser_Id(Long id, Long userId);
 }

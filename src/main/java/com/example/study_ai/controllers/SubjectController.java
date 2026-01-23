@@ -24,13 +24,30 @@ public class SubjectController {
     @PostMapping
     public ResponseEntity<SubjectResponseDTO> create(
             @PathVariable Long classroomId,
-            @RequestBody @Valid CreateSubjectRequestDTO request,
+            @RequestBody CreateSubjectRequestDTO request,
             Authentication authentication
     ) {
         SubjectResponseDTO subject =
                 subjectService.create(classroomId, request, authentication);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(subject);
+    }
+
+    @PutMapping("/{subjectId}")
+    public ResponseEntity<SubjectResponseDTO> updateSubject(
+            @PathVariable Long classroomId,
+            @PathVariable Long subjectId,
+            @RequestBody CreateSubjectRequestDTO request,
+            Authentication authentication
+    ) {
+        return ResponseEntity.ok(
+                subjectService.updateSubject(
+                        classroomId,
+                        subjectId,
+                        request,
+                        authentication
+                )
+        );
     }
 
     @GetMapping
@@ -42,4 +59,16 @@ public class SubjectController {
                 subjectService.listByClassroom(classroomId, authentication)
         );
     }
+
+    @DeleteMapping("/{subjectId}")
+    public ResponseEntity<Void> delete(
+            @PathVariable Long classroomId,
+            @PathVariable Long subjectId,
+            Authentication authentication
+    ) {
+        subjectService.deleteSubject(classroomId, subjectId, authentication);
+        return ResponseEntity.noContent().build();
+    }
+
+
 }

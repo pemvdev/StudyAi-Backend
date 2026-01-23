@@ -32,6 +32,15 @@ public class ClassroomController {
         return ResponseEntity.ok(classroomService.findByUserId(userId));
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<Classroom> getById(@PathVariable Long id,
+            Authentication authentication) {
+        Long userId = (Long) authentication.getPrincipal();
+        return ResponseEntity.ok(
+                classroomService.findByIdAndUserId(id, userId)
+        );
+    }
+
     @PostMapping
     public ResponseEntity<ClassroomResponseDTO> createClassroom(
             @RequestBody CreateClassroomRequestDTO request,

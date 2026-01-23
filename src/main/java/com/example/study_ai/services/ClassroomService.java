@@ -29,6 +29,12 @@ public class ClassroomService {
     }
 
 
+    public Classroom findByIdAndUserId(Long classroomId, Long userId) {
+        return classroomRepository
+                .findByIdAndUser_Id(classroomId, userId)
+                .orElseThrow(() -> new RuntimeException("Classroom not found"));
+    }
+
     public Classroom createClassRoom(CreateClassroomRequestDTO request, User user){
         Classroom classroom = new Classroom();
         classroom.setName(request.name());
