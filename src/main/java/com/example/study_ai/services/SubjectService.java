@@ -25,33 +25,19 @@ public class SubjectService {
     private final UserRepository userRepository;
 
 
-    public SubjectResponseDTO create(
+    public Subject createSubject(
             Long classroomId,
             @Valid CreateSubjectRequestDTO request,
-            Authentication authentication
+            User user
     ) {
-
-        Classroom classroom = classroomRepository
-                .findById(classroomId)
+        Classroom classroom = classroomRepository.findById(classroomId)
                 .orElseThrow(() -> new RuntimeException("Classroom not found"));
-
-        Long authenticatedUserId = Long.parseLong(authentication.getName());
-
-        if (!classroom.getUser().getId().equals(authenticatedUserId)) {
-            throw new AccessDeniedException("You are not the owner of this classroom");
-        }
 
         Subject subject = new Subject();
         subject.setName(request.name());
         subject.setClassroom(classroom);
 
-        Subject saved = subjectRepository.save(subject);
-
-        return new SubjectResponseDTO(
-                saved.getId(),
-                saved.getName(),
-                classroom.getId()
-        );
+        return subjectRepository.save(subject);
     }
 
     public List<SubjectResponseDTO> listByClassroom(
