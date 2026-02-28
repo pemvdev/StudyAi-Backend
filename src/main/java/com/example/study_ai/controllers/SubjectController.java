@@ -87,6 +87,17 @@ public class SubjectController {
         );
     }
 
+    @GetMapping("/{subjectId}")
+    public ResponseEntity<SubjectResponseDTO> specificSubject(
+            @PathVariable Long classroomId,
+            @PathVariable Long subjectId,
+            Authentication authentication
+    ){
+        return ResponseEntity.ok(
+                subjectService.getSpecificSubject(classroomId, subjectId, authentication)
+        );
+    }
+
     @DeleteMapping("/{subjectId}")
     public ResponseEntity<Void> delete(
             @PathVariable Long classroomId,

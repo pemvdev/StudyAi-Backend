@@ -18,7 +18,7 @@ public class Topic {
 
     private String name;
 
-    @Lob
+    @Column(columnDefinition = "TEXT")
     private String content;
 
     @ManyToOne

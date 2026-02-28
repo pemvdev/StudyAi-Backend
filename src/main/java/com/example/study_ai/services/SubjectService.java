@@ -66,6 +66,28 @@ public class SubjectService {
                 .toList();
     }
 
+    public SubjectResponseDTO getSpecificSubject(Long classroomId,
+                                                 Long subjectId,
+                                                 Authentication authentication){
+        Classroom classroom = classroomRepository
+                .findById(classroomId)
+                .orElseThrow(() -> new RuntimeException("Classroom not found"));
+
+        Subject subject = subjectRepository
+                .findById(subjectId)
+                .orElseThrow(() -> new RuntimeException("Subject not found"));
+
+        Long authenticatedUserId = Long.parseLong(authentication.getName());
+
+        if (!classroom.getUser().getId().equals(authenticatedUserId)) {
+            throw new AccessDeniedException("You are not the owner of this classroom");
+        }
+
+        return subjectRepository
+                .findByIdAndClassroom(subjectId, classroom)
+                .orElseThrow(() -> new RuntimeException("Subject not found"));
+    }
+
     public SubjectResponseDTO updateSubject(
             Long classroomId,
             Long subjectId,
