@@ -1,5 +1,6 @@
 package com.example.study_ai.domain.user;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
@@ -24,6 +25,7 @@ public class Classroom {
 
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name="user_id", nullable = false)
+    @JsonIgnore
     private User user;
 
     private String name;
