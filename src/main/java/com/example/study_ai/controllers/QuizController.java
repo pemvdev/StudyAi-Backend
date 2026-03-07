@@ -1,20 +1,18 @@
 package com.example.study_ai.controllers;
 
-import com.example.study_ai.domain.user.Quiz;
-import com.example.study_ai.domain.user.QuizQuestion;
 import com.example.study_ai.dtos.quiz.CreateQuizRequestDTO;
-import com.example.study_ai.dtos.quiz.QuestionResponseDTO;
 import com.example.study_ai.dtos.quiz.QuizResponseDTO;
+import com.example.study_ai.dtos.quiz.QuizResultDTO;
+import com.example.study_ai.dtos.quiz.QuizSubmissionDTO;
 import com.example.study_ai.services.QuizService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Controller
+@RestController
 @RequestMapping("/quizzes")
 public class QuizController {
 
@@ -48,5 +46,16 @@ public class QuizController {
         QuizResponseDTO quiz = quizService.getQuizById(id);
 
         return ResponseEntity.ok(quiz);
+    }
+
+    @PostMapping("/{id}/submit")
+    public QuizResultDTO submitQuiz(
+            @PathVariable Long id,
+            Authentication authentication,
+            @RequestBody QuizSubmissionDTO submission) {
+
+        Long userId = (Long) authentication.getPrincipal();
+
+        return quizService.submitQuiz(id, userId, submission);
     }
 }

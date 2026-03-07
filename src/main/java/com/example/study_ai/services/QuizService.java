@@ -3,9 +3,7 @@ package com.example.study_ai.services;
 import com.example.study_ai.domain.user.Quiz;
 import com.example.study_ai.domain.user.QuizQuestion;
 import com.example.study_ai.domain.user.Topic;
-import com.example.study_ai.dtos.quiz.AIQuestionDTO;
-import com.example.study_ai.dtos.quiz.QuestionResponseDTO;
-import com.example.study_ai.dtos.quiz.QuizResponseDTO;
+import com.example.study_ai.dtos.quiz.*;
 import com.example.study_ai.repositories.QuizQuestionRepository;
 import com.example.study_ai.repositories.QuizRepository;
 import com.example.study_ai.repositories.TopicRepository;
@@ -130,5 +128,52 @@ public class QuizService {
                 quizQuestionRepository.findByQuizId(id);
 
         return mapToResponse(quiz, questions);
+    }
+
+    public QuizResultDTO submitQuiz(Long id, Long userId,QuizSubmissionDTO submission) {
+
+        Quiz quiz = quizRepository.findById(submission.quizId())
+                .orElseThrow(() -> new RuntimeException("Quiz not found"));
+
+        if (!quiz.getUserId().equals(userId)) {
+            throw new RuntimeException("User not allowed to submit this quiz");
+        }
+
+        List<QuizQuestion> questions =
+                quizQuestionRepository.findByQuizId(submission.quizId());
+
+        int correct = 0;
+
+        for (QuestionAnswerDTO answer : submission.answers()) {
+
+            QuizQuestion question = questions.stream()
+                    .filter(q -> q.getId().equals(answer.questionId()))
+                    .findFirst()
+                    .orElseThrow();
+
+            question.setSelectedIndex(answer.selectedIndex());
+
+            boolean isCorrect =
+                    answer.selectedIndex().equals(question.getCorrectIndex());
+
+            question.setIsCorrect(isCorrect);
+
+            if (isCorrect) {
+                correct++;
+            }
+        }
+
+        quizQuestionRepository.saveAll(questions);
+
+        double score = ((double) correct / questions.size()) * 100;
+
+        quiz.setScore(score);
+        quizRepository.save(quiz);
+
+        return new QuizResultDTO(
+                score,
+                correct,
+                questions.size()
+        );
     }
 }
