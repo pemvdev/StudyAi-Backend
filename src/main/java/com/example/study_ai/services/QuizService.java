@@ -10,6 +10,7 @@ import com.example.study_ai.repositories.TopicRepository;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -99,7 +100,10 @@ public class QuizService {
 
         return new QuizResponseDTO(
                 quiz.getId(),
-                questionResponses
+                questionResponses,
+                quiz.getCreatedAt(),
+                quiz.getScore(),
+                questions.size()
         );
     }
 

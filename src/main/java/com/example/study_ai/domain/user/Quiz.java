@@ -1,5 +1,6 @@
 package com.example.study_ai.domain.user;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -25,7 +26,12 @@ public class Quiz {
 
     private Double score;
 
+    @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = LocalDateTime.now();
+    }
 
     @OneToMany(mappedBy = "quiz", cascade = CascadeType.ALL)
     private List<QuizQuestion> questions = new ArrayList<>();
