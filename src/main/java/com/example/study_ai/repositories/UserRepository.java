@@ -9,6 +9,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     Optional<User> findByEmail(String login);
 
-
+    Optional<User> findById(Long id);
 
 }

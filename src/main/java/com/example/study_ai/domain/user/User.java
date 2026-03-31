@@ -25,11 +25,13 @@ public class User {
 
     private String email;
 
+    @JsonIgnore
     private String password;
 
+    private String profilePicture;
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnore //Arrumar depois (Apenas um jeito para mostrar todas as classes
-    // criadas (NAO ESTA LISTANDO POR USUARIO)
+    @JsonIgnore 
     private List<Classroom> classrooms = new ArrayList<>();
 
 
